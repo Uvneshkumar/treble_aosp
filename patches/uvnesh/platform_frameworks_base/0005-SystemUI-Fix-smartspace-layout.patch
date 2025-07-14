@@ -1,0 +1,61 @@
+From 5be6b23aa49ba993cf43c52693f2caeb07d3c6af Mon Sep 17 00:00:00 2001
+From: Pranav Vashi <neobuddy89@gmail.com>
+Date: Thu, 9 Jan 2025 00:21:31 +0530
+Subject: [PATCH 5/8] SystemUI: Fix smartspace layout
+
+Change-Id: If3a3bd1908c566b8a2d9195fbac75b6ecbdf9a9b
+Signed-off-by: Pranav Vashi <neobuddy89@gmail.com>
+---
+ .../ui/view/layout/sections/ClockSection.kt   | 22 +------------------
+ .../view/layout/sections/SmartspaceSection.kt |  2 +-
+ 2 files changed, 2 insertions(+), 22 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/ClockSection.kt b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/ClockSection.kt
+index 9c6f46570b1d..906337f5705b 100644
+--- a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/ClockSection.kt
++++ b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/ClockSection.kt
+@@ -120,27 +120,7 @@ constructor(
+             setAlpha(getTargetClockFace(clock).views, 1F)
+             setAlpha(getNonTargetClockFace(clock).views, 0F)
+ 
+-            if (!keyguardClockViewModel.isLargeClockVisible.value) {
+-                if (
+-                    KeyguardSmartspaceViewModel.dateWeatherBelowSmallClock(
+-                        context.resources.configuration
+-                    )
+-                ) {
+-                    connect(
+-                        sharedR.id.bc_smartspace_view,
+-                        TOP,
+-                        sharedR.id.date_smartspace_view,
+-                        BOTTOM,
+-                    )
+-                } else {
+-                    connect(
+-                        sharedR.id.bc_smartspace_view,
+-                        TOP,
+-                        customR.id.lockscreen_clock_view,
+-                        BOTTOM,
+-                    )
+-                }
+-            } else {
++            if (keyguardClockViewModel.isLargeClockVisible.value) {
+                 setScaleX(getTargetClockFace(clock).views, aodBurnInViewModel.movement.value.scale)
+                 setScaleY(getTargetClockFace(clock).views, aodBurnInViewModel.movement.value.scale)
+             }
+diff --git a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/SmartspaceSection.kt b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/SmartspaceSection.kt
+index d9652b590678..e2cb5778721e 100644
+--- a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/SmartspaceSection.kt
++++ b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/SmartspaceSection.kt
+@@ -227,7 +227,7 @@ constructor(
+                     connect(
+                         sharedR.id.bc_smartspace_view,
+                         ConstraintSet.TOP,
+-                        sharedR.id.date_smartspace_view,
++                        customR.id.lockscreen_clock_view,
+                         ConstraintSet.BOTTOM,
+                     )
+                 }
+-- 
+2.43.0
+

@@ -1,0 +1,41 @@
+From 71af437e9b5156bbaf9fdba55261022ab08e4436 Mon Sep 17 00:00:00 2001
+From: Uvnesh <uvneshkumar@gmail.com>
+Date: Mon, 14 Jul 2025 12:18:52 +0000
+Subject: [PATCH 8/8] SystemUI: SmartspaceSection: Build decoupled views only
+ when required
+
+Change-Id: Ifdccf6e4df5a88cbf20d4fb4484d717609905ce3
+---
+ .../keyguard/ui/view/layout/sections/SmartspaceSection.kt | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/SmartspaceSection.kt b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/SmartspaceSection.kt
+index e2cb5778721e..e2eba0980e3e 100644
+--- a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/SmartspaceSection.kt
++++ b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/SmartspaceSection.kt
+@@ -76,11 +76,7 @@ constructor(
+     override fun addViews(constraintLayout: ConstraintLayout) {
+         if (!keyguardSmartspaceViewModel.isSmartspaceEnabled) return
+         smartspaceView = smartspaceController.buildAndConnectView(constraintLayout)
+-        dateView =
+-            smartspaceController.buildAndConnectDateView(constraintLayout, false) as? ViewGroup
+         var weatherViewLargeClock: View? = null
+-        val weatherView: View? =
+-            smartspaceController.buildAndConnectWeatherView(constraintLayout, false)
+         if (com.android.systemui.shared.Flags.clockReactiveSmartspaceLayout()) {
+             weatherViewLargeClock =
+                 smartspaceController.buildAndConnectWeatherView(constraintLayout, true)
+@@ -112,6 +108,10 @@ constructor(
+         }
+ 
+         if (keyguardSmartspaceViewModel.isDateWeatherDecoupled) {
++            dateView =
++                smartspaceController.buildAndConnectDateView(constraintLayout, false) as? ViewGroup
++            val weatherView: View? =
++                smartspaceController.buildAndConnectWeatherView(constraintLayout, false)
+             constraintLayout.addView(dateView)
+             // Place weather right after the date, before the extras (alarm and dnd)
+             val index = if (dateView?.childCount == 0) 0 else 1
+-- 
+2.43.0
+

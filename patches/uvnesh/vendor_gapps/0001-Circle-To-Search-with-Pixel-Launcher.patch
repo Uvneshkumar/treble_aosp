@@ -1,0 +1,121 @@
+From d6225602f6cff91e4a7d0c89f178db134575cb41 Mon Sep 17 00:00:00 2001
+From: Uvnesh <uvneshkumar@gmail.com>
+Date: Mon, 14 Jul 2025 11:57:31 +0000
+Subject: [PATCH] Circle-To-Search with Pixel Launcher
+
+---
+ common/common-vendor.mk                       |  1 +
+ .../product/etc/sysconfig/Android.bp          |  9 +++++
+ .../etc/sysconfig/contextual_search.xml       |  6 +++
+ .../GmsConfigOverlay/res/values/config.xml    | 39 +++++++++++++++++++
+ update_zip.sh                                 |  1 +
+ 5 files changed, 56 insertions(+)
+ create mode 100644 common/proprietary/product/etc/sysconfig/contextual_search.xml
+
+diff --git a/common/common-vendor.mk b/common/common-vendor.mk
+index d1565dd..cb6c6f3 100644
+--- a/common/common-vendor.mk
++++ b/common/common-vendor.mk
+@@ -63,6 +63,7 @@ PRODUCT_PACKAGES += \
+     gms_fsverity_cert \
+     play_store_fsi_cert \
+     sysconfig_d2d_cable_migration_feature \
++    sysconfig_contextual_search \
+     sysconfig_game_service \
+     sysconfig_google_build \
+     sysconfig_google \
+diff --git a/common/proprietary/product/etc/sysconfig/Android.bp b/common/proprietary/product/etc/sysconfig/Android.bp
+index 58d1974..842af1b 100644
+--- a/common/proprietary/product/etc/sysconfig/Android.bp
++++ b/common/proprietary/product/etc/sysconfig/Android.bp
+@@ -7,6 +7,15 @@ prebuilt_etc {
+     product_specific: true,
+ }
+ 
++prebuilt_etc {
++    name: "sysconfig_contextual_search",
++    owner: "gapps",
++    sub_dir: "sysconfig",
++    src: "contextual_search.xml",
++    filename_from_src: true,
++    product_specific: true,
++}
++
+ prebuilt_etc {
+     name: "sysconfig_game_service",
+     owner: "gapps",
+diff --git a/common/proprietary/product/etc/sysconfig/contextual_search.xml b/common/proprietary/product/etc/sysconfig/contextual_search.xml
+new file mode 100644
+index 0000000..f34b585
+--- /dev/null
++++ b/common/proprietary/product/etc/sysconfig/contextual_search.xml
+@@ -0,0 +1,6 @@
++<?xml version="1.0" encoding="utf-8"?>
++<!-- These are configurations that should exist on devices that support Contextual Search -->
++<config>
++    <!-- This feature identifies devices with Contextual Search (Circle to Search) -->
++    <feature name="com.google.android.feature.CONTEXTUAL_SEARCH"/>
++</config>
+diff --git a/common/rro_overlays/GmsConfigOverlay/res/values/config.xml b/common/rro_overlays/GmsConfigOverlay/res/values/config.xml
+index ec4ec08..a96978d 100644
+--- a/common/rro_overlays/GmsConfigOverlay/res/values/config.xml
++++ b/common/rro_overlays/GmsConfigOverlay/res/values/config.xml
+@@ -226,4 +226,43 @@
+ 
+     <!-- The name of the package that will handle updating the device management role. -->
+     <string name="config_devicePolicyManagementUpdater" translatable="false">com.google.android.gms</string>
++
++    <string name="config_defaultContextualSearchEnabled">omni.enable_cs_helper</string>
++    <string name="config_defaultContextualSearchKey">omni.entry_point</string>
++    <string name="config_defaultContextualSearchLegacyEnabled">omni.enable_vis</string>
++    <string name="config_defaultContextualSearchPackageName">com.google.android.googlequicksearchbox</string>
++
++    <!-- Define device configs on boot -->
++    <string-array name="global_device_configs_override">
++        <!-- Pixel Launcher -->
++        <item>launcher/enable_keyboard_transition_sync=true</item>
++        <item>launcher/ENABLE_LOCAL_RECOMMENDED_WIDGETS_FILTER=true</item>
++        <item>launcher/ENABLE_SMARTSPACE_ENHANCED=true</item>
++        <item>launcher/ENABLE_WIDGETS_PICKER_AIAI_SEARCH=true</item>
++        <item>launcher/ENABLE_QUICK_LAUNCH_V2=true</item>
++        <item>launcher/GBOARD_UPDATE_ENTER_KEY=true</item>
++        <item>launcher/enable_quick_search=true</item>
++        <item>launcher/enable_one_search=true</item>
++        <item>launcher/enable_quick_launch_v2=true</item>
++        <item>launcher/enable_rich_answer=true</item>
++        <item>launcher/ENABLE_SEARCH_HAPTIC_HINT=true</item>
++        <item>launcher/enable_web_suggest_on_default_browser=true</item>
++        <item>launcher/long_press_home_button_to_search=true</item>
++        <item>launcher/long_press_home_button_to_search_mpr=true</item>
++        <item>launcher/press_hold_nav_handle_to_search=true</item>
++        <item>launcher/press_hold_nav_handle_to_search_mpr=true</item>
++        <item>launcher/ENABLE_LONG_PRESS_NAV_HANDLE=true</item>
++        <item>launcher/ENABLE_LONG_PRESS_NAV_HANDLE_MPR=true</item>
++        <item>launcher/ENABLE_SETTINGS_OSE_CUSTOMIZATIONS=true</item>
++        <item>launcher/INVOKE_OMNI_LPH=true</item>
++        <item>launcher/INVOKE_OMNI_LPH_MPR=true</item>
++        <item>launcher/LPNH_SLOP_PERCENTAGE=71</item>
++        <item>launcher/LPNH_TIMEOUT_MS=400</item>
++        <item>launcher/ANIMATE_LPNH=true</item>
++        <item>launcher/SHRINK_NAV_HANDLE_ON_PRESS=true</item>
++        <item>launcher/show_search_educard_qsb=true</item>
++        <item>launcher/show_three_dot_menu_qsb=true</item>
++        <item>launcher/use_app_search_for_web=true</item>
++        <item>launcher/use_fallback_app_search=true</item>
++    </string-array>
+ </resources>
+diff --git a/update_zip.sh b/update_zip.sh
+index 8b64e24..e3cb83e 100644
+--- a/update_zip.sh
++++ b/update_zip.sh
+@@ -111,6 +111,7 @@ cp -f "$sourceFolder"/etc/preferred-apps/gms/google.xml ./common/proprietary/pro
+ cp -f "$sourceFolder"/etc/security/gms_fsverity_cert.der ./common/proprietary/product/etc/security/fsverity
+ cp -f "$sourceFolder"/etc/security/play_store_fsi_cert.der ./common/proprietary/product/etc/security/fsverity
+ cp -f "$sourceFolder"/etc/sysconfig/d2d_cable_migration_feature.xml ./common/proprietary/product/etc/sysconfig
++cp -f "$sourceFolder"/etc/sysconfig/contextual_search.xml ./common/proprietary/product/etc/sysconfig
+ cp -f "$sourceFolder"/etc/sysconfig/google-hiddenapi-package-allowlist.xml ./common/proprietary/etc/sysconfig
+ cp -f "$sourceFolder"/etc/sysconfig/wellbeing.xml ./common/proprietary/product/etc/sysconfig
+ cp -f "$sourceFolder"/etc/sysconfig/gms/google.xml ./common/proprietary/product/etc/sysconfig
+-- 
+2.43.0
+

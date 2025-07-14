@@ -29,7 +29,7 @@ initRepos() {
 
 syncRepos() {
     echo "--> Syncing repos"
-    repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --ignore=2) || repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --ignore=2)
+    repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all) || repo sync -c --force-sync --no-clone-bundle --no-tags -j$(nproc --all)
     echo
 }
 
@@ -40,6 +40,10 @@ applyPatches() {
 
     echo "--> Applying personal patches"
     bash $BUILD_ROOT/patch.sh $BUILD_ROOT personal
+    echo
+
+    echo "--> Applying very personal patches"
+    bash $BUILD_ROOT/patch.sh $BUILD_ROOT uvnesh
     echo
 
     echo "--> Generating makefiles"
@@ -69,10 +73,10 @@ buildTrebleApp() {
 
 buildVariant() {
     echo "--> Building $1"
-    lunch "$1"-bp2a-userdebug
-    make -j$(nproc --ignore=2) installclean
-    make -j$(nproc --ignore=2) systemimage
-    make -j$(nproc --ignore=2) target-files-package otatools
+    lunch "$1"-bp2a-user
+    make -j$(nproc --all) installclean
+    make -j$(nproc --all) systemimage
+    make -j$(nproc --all) target-files-package otatools
     bash $BUILD_ROOT/sign.sh "vendor/ponces-priv/keys" $OUT/signed-target_files.zip
     unzip -joq $OUT/signed-target_files.zip IMAGES/system.img -d $OUT
     mv $OUT/system.img $OUTPUT_DIR/system-"$1".img
@@ -80,7 +84,6 @@ buildVariant() {
 }
 
 buildVariants() {
-    buildVariant treble_arm64_bvN
     buildVariant treble_arm64_bgN
 }
 
@@ -97,27 +100,6 @@ generatePackages() {
     echo
 }
 
-generateOta() {
-    echo "--> Generating OTA file"
-    version="$(date +v%Y.%m.%d)"
-    buildDate="$(date +%Y%m%d)"
-    timestamp="$START"
-    json="{\"version\": \"$version\",\"date\": \"$timestamp\",\"variants\": ["
-    find $OUTPUT_DIR/ -name "aosp-*-16.0-$buildDate.img.xz" | sort | {
-        while read file; do
-            filename="$(basename $file)"
-            [[ "$filename" == *"-vanilla"* ]] && variant="v" || variant="g"
-            name="treble_arm64_b${variant}N"
-            size=$(wc -c $file | awk '{print $1}')
-            url="https://github.com/ponces/treble_aosp/releases/download/$version/$filename"
-            json="${json} {\"name\": \"$name\",\"size\": \"$size\",\"url\": \"$url\"},"
-        done
-        json="${json%?}]}"
-        echo "$json" | jq . > $BUILD_ROOT/config/ota.json
-    }
-    echo
-}
-
 START=$(date +%s)
 
 initRepos
@@ -127,7 +109,6 @@ setupEnv
 buildTrebleApp
 [ ! -z "$BUILD_VARIANT" ] && buildVariant "$BUILD_VARIANT" || buildVariants
 generatePackages
-generateOta
 
 END=$(date +%s)
 ELAPSEDM=$(($(($END-$START))/60))

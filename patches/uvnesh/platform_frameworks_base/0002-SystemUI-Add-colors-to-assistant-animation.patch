@@ -1,0 +1,58 @@
+From e5aad7c1185c41db17d54e8fd0f70c49c80ea4de Mon Sep 17 00:00:00 2001
+From: paphonb <paphonb@gmail.com>
+Date: Sat, 14 Sep 2019 09:05:16 +0000
+Subject: [PATCH 2/8] SystemUI: Add colors to assistant animation
+
+Change-Id: I09f0c91e117b80ab4f7828f32f2977de2e86023c
+Signed-off-by: Adithya R <gh0strider.2k18.reborn@gmail.com>
+---
+ packages/SystemUI/res/values/colors.xml                   | 6 ++++++
+ .../android/systemui/assist/ui/InvocationLightsView.java  | 8 ++++++++
+ 2 files changed, 14 insertions(+)
+
+diff --git a/packages/SystemUI/res/values/colors.xml b/packages/SystemUI/res/values/colors.xml
+index e1318dd43c88..564f4bd7486a 100644
+--- a/packages/SystemUI/res/values/colors.xml
++++ b/packages/SystemUI/res/values/colors.xml
+@@ -164,6 +164,12 @@
+     <color name="overlay_button_ripple">#1f000000</color>
+     <color name="overlay_background_protection_start">#40000000</color> <!-- 25% black -->
+ 
++    <!-- Color for the Assistant invocation lights -->
++    <color name="edge_light_blue">#ff4185f4</color>
++    <color name="edge_light_green">#ff3aa853</color>
++    <color name="edge_light_red">#ffea4234</color>
++    <color name="edge_light_yellow">#fffbbc06</color>
++
+     <!-- GM2 colors -->
+     <color name="GM2_grey_100">#F1F3F4</color>
+     <color name="GM2_grey_200">#E8EAED</color>
+diff --git a/packages/SystemUI/src/com/android/systemui/assist/ui/InvocationLightsView.java b/packages/SystemUI/src/com/android/systemui/assist/ui/InvocationLightsView.java
+index 7dfa4f91bb47..414c1b55502e 100644
+--- a/packages/SystemUI/src/com/android/systemui/assist/ui/InvocationLightsView.java
++++ b/packages/SystemUI/src/com/android/systemui/assist/ui/InvocationLightsView.java
+@@ -20,6 +20,7 @@ import android.animation.ArgbEvaluator;
+ import android.annotation.ColorInt;
+ import android.annotation.Nullable;
+ import android.content.Context;
++import android.content.res.Resources;
+ import android.graphics.Canvas;
+ import android.graphics.Color;
+ import android.graphics.Paint;
+@@ -115,6 +116,13 @@ public class InvocationLightsView extends View
+         for (int i = 0; i < 4; i++) {
+             mAssistInvocationLights.add(new EdgeLight(Color.TRANSPARENT, 0, 0));
+         }
++
++        Resources res = mContext.getResources();
++        int colorRed = res.getColor(R.color.edge_light_red);
++        int colorYellow = res.getColor(R.color.edge_light_yellow);
++        int colorBlue = res.getColor(R.color.edge_light_blue);
++        int colorGreen = res.getColor(R.color.edge_light_green);
++        setColors(colorBlue, colorRed, colorYellow, colorGreen);
+     }
+ 
+     /**
+-- 
+2.43.0
+

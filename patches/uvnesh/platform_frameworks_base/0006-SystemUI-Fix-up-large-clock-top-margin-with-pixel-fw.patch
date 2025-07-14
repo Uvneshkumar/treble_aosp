@@ -1,0 +1,43 @@
+From 5ba8ba7b15db02491b72162cfab707380667d2a1 Mon Sep 17 00:00:00 2001
+From: Pranav Vashi <neobuddy89@gmail.com>
+Date: Mon, 3 Mar 2025 02:15:20 +0530
+Subject: [PATCH 6/8] SystemUI: Fix up large clock top margin with pixel-fw
+
+* Brings back large clock to original position.
+
+Change-Id: I948acd6b7f44bb23298fe2b316218902c5ef04d2
+Signed-off-by: Pranav Vashi <neobuddy89@gmail.com>
+---
+ .../keyguard/ui/view/layout/sections/ClockSection.kt     | 9 +--------
+ 1 file changed, 1 insertion(+), 8 deletions(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/ClockSection.kt b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/ClockSection.kt
+index 906337f5705b..46175f39951e 100644
+--- a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/ClockSection.kt
++++ b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/ClockSection.kt
+@@ -137,12 +137,6 @@ constructor(
+ 
+     private fun constrainWeatherClockDateIconsBarrier(constraints: ConstraintSet) {
+         constraints.apply {
+-            createBarrier(
+-                R.id.weather_clock_bc_smartspace_bottom,
+-                Barrier.BOTTOM,
+-                getDimen(ENHANCED_SMARTSPACE_HEIGHT),
+-                (customR.id.weather_clock_time),
+-            )
+             if (
+                 rootViewModel.isNotifIconContainerVisible.value.value &&
+                     keyguardClockViewModel.hasAodIcons.value
+@@ -188,8 +182,7 @@ constructor(
+                         getDimen(ENHANCED_SMARTSPACE_HEIGHT)
+                 } else {
+                     keyguardClockViewModel.getLargeClockTopMargin() +
+-                        getDimen(DATE_WEATHER_VIEW_HEIGHT) +
+-                        getDimen(ENHANCED_SMARTSPACE_HEIGHT)
++                        getDimen(DATE_WEATHER_VIEW_HEIGHT)
+                 }
+             connect(
+                 customR.id.lockscreen_clock_view_large,
+-- 
+2.43.0
+

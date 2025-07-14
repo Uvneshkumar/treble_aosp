@@ -1,0 +1,27 @@
+From a7405929a341630665ae15267b2eadd355b923b7 Mon Sep 17 00:00:00 2001
+From: Dmitry Muhomor <muhomor.dmitry@gmail.com>
+Date: Tue, 18 Mar 2025 17:07:38 +0200
+Subject: [PATCH 4/8] SystemUI: fix keyguard media section placement when split
+ shade is used
+
+Split notification shade is used on tablets in landscape mode and on foldables in unfolded state.
+---
+ .../keyguard/ui/view/layout/sections/SplitShadeMediaSection.kt  | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/SplitShadeMediaSection.kt b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/SplitShadeMediaSection.kt
+index c91a0072a502..ea82ba4e0e2d 100644
+--- a/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/SplitShadeMediaSection.kt
++++ b/packages/SystemUI/src/com/android/systemui/keyguard/ui/view/layout/sections/SplitShadeMediaSection.kt
+@@ -66,7 +66,7 @@ constructor(
+         constraintSet.apply {
+             constrainWidth(mediaContainerId, MATCH_CONSTRAINT)
+             constrainHeight(mediaContainerId, WRAP_CONTENT)
+-            connect(mediaContainerId, TOP, R.id.smart_space_barrier_bottom, BOTTOM)
++            connect(mediaContainerId, TOP, R.id.keyguard_slice_view, BOTTOM)
+             connect(mediaContainerId, START, PARENT_ID, START)
+             connect(mediaContainerId, END, R.id.split_shade_guideline, END)
+         }
+-- 
+2.43.0
+

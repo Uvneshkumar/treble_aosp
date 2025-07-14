@@ -1,0 +1,33 @@
+From 9280d407c73a0159baf56980e87c47564f43f035 Mon Sep 17 00:00:00 2001
+From: Ido Ben-Hur <idoybh2@gmail.com>
+Date: Fri, 28 Mar 2025 22:01:21 +0300
+Subject: [PATCH 7/8] SystemUI: Bring back old smartspace padding
+
+looks better.
+
+Required as we have old smartspace impl.
+
+[hridaya: reword commit msg]
+
+Change-Id: Ia712280440d3d73fac5b93492886a93bf7c3dc87
+Signed-off-by: Hridaya Prajapati <info.hridayaprajapati@gmail.com>
+---
+ packages/SystemUI/res-keyguard/values/dimens.xml | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/packages/SystemUI/res-keyguard/values/dimens.xml b/packages/SystemUI/res-keyguard/values/dimens.xml
+index 24fd86076d64..3ccaa5b31df8 100644
+--- a/packages/SystemUI/res-keyguard/values/dimens.xml
++++ b/packages/SystemUI/res-keyguard/values/dimens.xml
+@@ -114,7 +114,7 @@
+     <dimen name="below_clock_padding_start">32dp</dimen>
+     <dimen name="below_clock_padding_end">16dp</dimen>
+     <dimen name="below_clock_padding_start_icons">28dp</dimen>
+-    <dimen name="smartspace_padding_horizontal">16dp</dimen>
++    <dimen name="smartspace_padding_horizontal">28dp</dimen>
+     <dimen name="smartspace_padding_vertical">12dp</dimen>
+ 
+     <!-- Proportion of the screen height to use to set the maximum height of the bouncer to when
+-- 
+2.43.0
+
